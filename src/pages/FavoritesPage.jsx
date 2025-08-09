@@ -1,11 +1,10 @@
 import { useContext } from "react";
 import { Link } from "react-router-dom";
 import { FavoritesContext } from "../context/FavoritesContext";
-
-const IMG = import.meta.env.VITE_TMDB_IMG_BASE;
+import MovieCard from "../components/MovieCard.jsx";
 
 export default function FavoritesPage() {
-  const { favorites, remove } = useContext(FavoritesContext);
+  const { favorites, remove, isFavorite } = useContext(FavoritesContext);
 
   if (favorites.length === 0) {
     return (
@@ -29,28 +28,14 @@ export default function FavoritesPage() {
         }}
       >
         {favorites.map((m) => (
-          <div key={m.id} style={{ border: "1px solid #333", padding: 8 }}>
-            <Link
-              to={`/movie/${m.id}`}
-              style={{ textDecoration: "none", color: "inherit" }}
-            >
-              <img
-                src={
-                  m.poster_path
-                    ? `${IMG}/w342${m.poster_path}`
-                    : "https://via.placeholder.com/342x513?text=Sem+Poster"
-                }
-                alt={m.title}
-                style={{ width: "100%", height: 240, objectFit: "cover" }}
-              />
-              <h3 style={{ fontSize: 16, marginTop: 8 }}>{m.title}</h3>
-              <p style={{ opacity: 0.7 }}>{(m.release_date || "").slice(0, 4)}</p>
-            </Link>
-
-            <button onClick={() => remove(m.id)} style={{ marginTop: 8 }}>
-              Remover
-            </button>
-          </div>
+          <MovieCard
+            key={m.id}
+            movie={m}
+            // aqui o botão remove direto dos favoritos
+            onToggleFavorite={() => remove(m.id)}
+            // passa isFavorite para o rótulo mostrar "Remover"
+            isFavorite={isFavorite}
+          />
         ))}
       </div>
     </div>
