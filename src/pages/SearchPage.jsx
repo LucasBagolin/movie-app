@@ -1,14 +1,14 @@
-import { useState, useCallback, useEffect } from "react";
+import { useState, useCallback, useEffect, useContext } from "react";
 import SearchBar from "../components/SearchBar.jsx";
 import { searchMovies } from "../api/tmdb.js";
-import { Link } from "react-router-dom";
 import Loader from "../components/Loader.jsx";
 import ErrorMessage from "../components/ErrorMessage.jsx";
 import EmptyState from "../components/EmptyState.jsx";
 import Pagination from "../components/Pagination.jsx";
 import useDebounce from "../hooks/useDebounce.js";
-
-const IMG = import.meta.env.VITE_TMDB_IMG_BASE;
+import MovieCard from "../components/MovieCard.jsx";
+import { FavoritesContext } from "../context/FavoritesContext.jsx";
+import s from "./SearchPage.module.css";
 
 export default function SearchPage() {
   const [query, setQuery] = useState("");
@@ -19,6 +19,8 @@ export default function SearchPage() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
+
+  const { toggle, isFavorite } = useContext(FavoritesContext);
 
   const doSearch = useCallback(async (q, p = 1) => {
     if (!q.trim()) return;
@@ -36,39 +38,46 @@ export default function SearchPage() {
     }
   }, []);
 
-  // dispara busca automática quando o valor "debounced" muda
-  // (opcional: pode deixar só no submit se preferir)
-  useEffect(() => { if (debouncedQuery) doSearch(debouncedQuery, 1); }, [debouncedQuery, doSearch]);
+  useEffect(() => {
+    if (debouncedQuery) doSearch(debouncedQuery, 1);
+  }, [debouncedQuery, doSearch]);
+
+  const showStart = !loading && !error && !query && results.length === 0;
+  const showNoResults = !loading && !error && !!query && results.length === 0;
 
   return (
     <div>
-      <h1>Buscar Filmes</h1>
+      <h1 className={s.title}>Buscar Filmes</h1>
 
       <SearchBar
         value={query}
-        onChange={(v) => { setQuery(v); setPage(1); }}
+        onChange={(v) => {
+          setQuery(v);
+          setPage(1);
+        }}
         onSubmit={() => doSearch(query, 1)}
       />
 
       {loading && <Loader />}
-      {error && <ErrorMessage message={error} onRetry={() => doSearch(query, page)} />}
+      {error && (
+        <ErrorMessage message={error} onRetry={() => doSearch(query, page)} />
+      )}
 
-      {!loading && !error && !query && <EmptyState message="Digite um termo e clique em Buscar." />}
-      {!loading && !error && query && results.length === 0 && <EmptyState message="Nenhum resultado encontrado." />}
+      {showStart && (
+        <EmptyState message="Digite um termo e clique em Buscar." />
+      )}
+      {showNoResults && (
+        <EmptyState message="Nenhum resultado encontrado." />
+      )}
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(160px, 1fr))", gap: 12 }}>
+      <div className={s.grid} aria-busy={loading}>
         {results.map((m) => (
-          <div key={m.id} style={{ border: "1px solid #333", padding: 8 }}>
-            <Link to={`/movie/${m.id}`} style={{ textDecoration: "none", color: "inherit" }}>
-              <img
-                src={m.poster_path ? `${IMG}/w342${m.poster_path}` : "https://via.placeholder.com/342x513?text=Sem+Poster"}
-                alt={m.title}
-                style={{ width: "100%", height: 240, objectFit: "cover" }}
-              />
-              <h3 style={{ fontSize: 16, marginTop: 8 }}>{m.title}</h3>
-              <p style={{ opacity: 0.7 }}>{(m.release_date || "").slice(0,4)}</p>
-            </Link>
-          </div>
+          <MovieCard
+            key={m.id}
+            movie={m}
+            onToggleFavorite={toggle}
+            isFavorite={isFavorite}
+          />
         ))}
       </div>
 

@@ -1,19 +1,17 @@
-export default function SearchBar({ value, onChange, onSubmit }) {
-  function handleSubmit(e) {
-    e.preventDefault();           // não recarrega a página
-    onSubmit?.();
-  }
+import s from "./SearchBar.module.css";
 
+export default function SearchBar({ value, onChange, onSubmit }) {
+  function handleSubmit(e){ e.preventDefault(); onSubmit?.(); }
   return (
-    <form onSubmit={handleSubmit} style={{ marginBottom: 16 }}>
+    <form onSubmit={handleSubmit} className={s.form}>
       <input
+        className={s.input}
         type="text"
         placeholder="Busque um filme..."
         value={value}
-        onChange={(e) => onChange(e.target.value)}
-        style={{ padding: 8, width: 320 }}
+        onChange={(e)=>onChange(e.target.value)}
       />
-      <button type="submit" style={{ marginLeft: 8 }}>Buscar</button>
+      <button className={s.btn} type="submit">Buscar</button>
     </form>
   );
 }

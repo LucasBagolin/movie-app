@@ -1,0 +1,13 @@
+.wrap { display: flex; gap: 20px; align-items: flex-start; margin-top: 12px; }
+.back { text-decoration: none; opacity: .85; }
+.poster { width: 260px; border-radius: 14px; border: 1px solid var(--border); background: #222; object-fit: cover; }
+.info { flex: 1; }
+.title { margin: 0 0 6px; }
+.year { opacity: .7; font-weight: 400; }
+.row { margin: 6px 0; }
+.overview { margin-top: 8px; }
+.fav {
+  margin-top: 12px; padding: 10px 14px; border-radius: 12px;
+  border: 1px solid var(--border); background: #1b1c21; color: var(--fg);
+}
+.fav[aria-pressed="true"] { border-color: var(--accent); }
