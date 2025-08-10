@@ -1,0 +1,12 @@
+.container { padding-top: 0; }
+.title { font-size: 44px; margin: 8px 0 12px; }
+
+.grid{
+  width: 100%;
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+  margin-top: 0;
+}
+
+.grid > *:first-child { margin-top: 0; }
