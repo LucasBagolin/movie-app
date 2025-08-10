@@ -11,6 +11,21 @@
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+
+  --bg:#0f0f12;
+  --fg:#eaeaea;
+  --muted:#9aa0a6;
+  --card:#15161a;
+  --border:#2a2b31;
+  --accent:#6ee7ff;
+}
+
+*{
+  box-sizing: border-box 
+}
+
+html, body, #root{ 
+  height: 100% 
 }
 
 a {
@@ -24,10 +39,12 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+  display: block;
+  background:var(--bg);
+  color:var(--fg);
+  font-family: system-ui, Segoe UI, Roboto, Arial
 }
 
 h1 {
@@ -46,11 +63,12 @@ button {
   cursor: pointer;
   transition: border-color 0.25s;
 }
+
 button:hover {
   border-color: #646cff;
 }
-button:focus,
-button:focus-visible {
+
+button:focus, button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
